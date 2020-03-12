@@ -82,7 +82,7 @@ function escribirArchivo(error, respuesta) {
 
     //Agregamos las lineas al archivo cargando Nombre, Dirección y Teléfono
 
-    fs.appendFile('museos.txt',"Nombre:" + museos[i].nombre + 
+    fs.appendFile('museos.txt',"Nombre: " + museos[i].nombre + 
     "Dirección: (" + museos[i].direccion +
      ") Teléfono: " + museos[i].telefono +
      "\n", terminar);
