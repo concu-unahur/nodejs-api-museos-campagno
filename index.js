@@ -1,4 +1,5 @@
 const superagent = require('superagent');
+const superagentOrganismos = require('superagent');
 const fs = require('fs');
 
 
@@ -30,22 +31,50 @@ function respuesta(error) {
 
 superagent
   .get('https://www.cultura.gob.ar/api/v2.0/museos')
-  .query({ format: 'json' })
+
+  // limit nos va a dar la cantidad solicitada de respuestas.
+  
+  .query({ format: 'json', limit: 15 })
   .end(escribirArchivo)
+
+superagentOrganismos
+  .get('https://www.cultura.gob.ar/api/v2.0/organismos')
+  .query({ format: 'json', limit: 15 })
+  .end(escribirArchivoOrganismos)
+
+function escribirArchivoOrganismos(error, respuesta) {
+   const organismos = respuesta.body.results;
+  
+    if (fs.existsSync("organismos.txt")){
+      fs.unlinkSync("organismos.txt");
+      console.log("Se eliminó el archivo TXT preexistente")
+    }
+    
+    var i = 0;
+  
+    for (i in organismos) {
+  
+      //Agregamos las lineas al archivo cargando Nombre, Dirección y Teléfono
+  
+      fs.appendFile('organismos.txt',"Organismo: " + organismos[i].nombre + 
+      "Dirección: (" + organismos[i].direccion +
+       ") Por cualquier consulta comunicarse al " + organismos[i].telefono +
+       "\n", terminar);
+  
+    }
+  
+    
+  }
+  
 
 function escribirArchivo(error, respuesta) {
   const museos = respuesta.body.results;
 
-  try {
-    if (fs.existsSync("museos.txt")){
-      fs.unlinkSync("museos.txt");
-      console.log("Se eliminó el archivo TXT preexistente")
-    }
+  if (fs.existsSync("museos.txt")){
+    fs.unlinkSync("museos.txt");
+    console.log("Se eliminó el archivo TXT preexistente")
   }
-  catch(error) {
-    console.log("No se encontró archivo Previo")
-  }
-
+  
   //console.log(museos.map(e => e.nombre))
   var i = 0;
 
