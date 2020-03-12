@@ -35,7 +35,32 @@ superagent
 
 function escribirArchivo(error, respuesta) {
   const museos = respuesta.body.results;
-  fs.writeFile('museos.txt',museos[4].nombre, terminar);
+
+  try {
+    if (fs.existsSync("museos.txt")){
+      fs.unlinkSync("museos.txt");
+      console.log("Se eliminó el archivo TXT preexistente")
+    }
+  }
+  catch(error) {
+    console.log("No se encontró archivo Previo")
+  }
+
+  //console.log(museos.map(e => e.nombre))
+  var i = 0;
+
+  for (i in museos) {
+
+    //Agregamos las lineas al archivo cargando Nombre, Dirección y Teléfono
+
+    fs.appendFile('museos.txt',"Nombre:" + museos[i].nombre + 
+    "Dirección: (" + museos[i].direccion +
+     ") Teléfono: " + museos[i].telefono +
+     "\n", terminar);
+
+  }
+
+  
 }
 
 console.log('Después de llamar a superagent')
